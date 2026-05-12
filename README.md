@@ -6,7 +6,7 @@ An interactive mathematical visualization built to explore **Nonlinear Eigenvalu
 https://ttbyun1485.github.io/NEPv-interactive-explorer/
 
 ## Local Setup
-To run this project on your machine, simply open the index.html file.
+To run this project on your machine, simply click the link in live demo. No installation is required. 
 
 ## Design Choices
 - Interactive game: Users can choose any vectors using the sliders for x and y. The tool allows the user to actively look for the solution and observe the pattern.
