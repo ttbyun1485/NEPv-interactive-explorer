@@ -13,11 +13,9 @@ To run this project on your machine, follow these steps:
    git clone https://ttbyun1485.github.io/NEPv-interactive-explorer/
 cd NEPv-interactive-explorer
 ```
-2. **Installation**
-   No installation is required.
+2. No installation is required.
 
-3. **Run Locally**
-   Simply open the index.html file.
+3. Simply open the index.html file.
 
 ## Design Choices
 - Interactive game: Users can choose any vectors using the sliders for x and y. The tool allows the user to actively look for the solution and observe the pattern.
