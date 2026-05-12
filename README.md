@@ -16,4 +16,4 @@ The tool allows users to manually "hunt" for eigenvectors by identifying positio
 
 ## 🤖 AI Disclosure & Hand-Verification
 This project was developed with the assistance of AI for UI/UX brainstorming and front-end architecture. 
-**Mathematical Integrity:** All core logic, specifically the NEPv operator and the alignment detection thresholds, were hand-verified. For example, the symmetric solution at $(-0.8, -0.8)$ and the inversion solution at $(-0.8, -1.25)$ were analytically confirmed to ensure visualization accuracy.
+
