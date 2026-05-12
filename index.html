@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEPv Explorer - Teresa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --slate: #1e293b;
+            --light-bg: #f8fafc;
+        }
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #fdf2f8 50%, #f0fdfa 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+        }
+
+        /* Hero Header */
+        .hero-header {
+            background: linear-gradient(135deg, #0f172a 0%, #312e81 50%, #6d28d9 100%);
+            color: white;
+            padding: 4rem 2rem 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(236, 72, 153, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(99, 102, 241, 0.2) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .hero-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, #f0f4ff);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-badge .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            font-weight: 300;
+            max-width: 700px;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1300px;
+            margin: -3rem auto 3rem;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Intro Card */
+        .intro-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-label-line {
+            width: 30px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .intro-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+
+        .intro-text {
+            font-size: 1.05rem;
+            line-height: 1.75;
+            color: #475569;
+            margin-bottom: 1.25rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 16px;
+            padding: 1.75rem;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+        }
+
+        .info-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .info-box-primary::before {
+            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+        }
+
+        .info-box-accent::before {
+            background: linear-gradient(to bottom, var(--accent), #be185d);
+        }
+
+        .info-box-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .info-box-primary .info-box-icon {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .info-box-accent .info-box-icon {
+            background: linear-gradient(135deg, var(--accent), #be185d);
+        }
+
+        .info-box h5 {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+
+        .info-box p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* Explorer Section */
+        .explorer-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 992px) {
+            .explorer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
+            height: fit-content;
+            position: sticky;
+            top: 1rem;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .panel-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .panel-desc {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        /* Slider Styling */
+        .slider-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: var(--slate);
+            font-size: 0.95rem;
+        }
+
+        .slider-value {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            color: var(--primary-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #e0e7ff, #c7d2fe);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Status Display */
+        .status-card {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid #bfdbfe;
+            transition: all 0.4s ease;
+        }
+
+        .status-card.aligned {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #6ee7b7;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+            to { box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); }
+        }
+
+        .status-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #1e40af;
+            margin-bottom: 0.25rem;
+        }
+
+        .status-card.aligned .status-label {
+            color: #065f46;
+        }
+
+        .status-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .status-card.aligned .status-value {
+            color: #064e3b;
+        }
+
+        .eigenvalue-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        /* Graph Panel */
+        .graph-panel {
+            background: white;
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
+        }
+
+        .graph-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0 0.5rem;
+        }
+
+        .graph-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .legend-pills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.75rem;
+            background: #f1f5f9;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--slate);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Equation block styling */
+        .equation-block {
+            background: #0f172a;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Header -->
+    <header class="hero-header">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                INTERACTIVE MATHEMATICAL VISUALIZATION
+            </div>
+            <h1 class="hero-title">NEPv Interactive Explorer</h1>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Introduction Section -->
+        <section class="intro-card">
+            <div class="section-label">
+                <span class="section-label-line"></span>
+                THE CONCEPT
+            </div>
+            <h2 class="intro-title">Understanding the NEPv Setup</h2>
+
+            <p class="intro-text">
+                In a standard linear eigenvalue problem, $Av = \lambda v$, the matrix $A$ is fixed. An eigenvector $v$ is a "special" vector that, when transformed by $A$, only changes in scale but not direction.
+            </p>
+
+            <p class="intro-text">
+                In a <strong>Nonlinear Eigenvalue Problem with eigenvector dependency (NEPv)</strong>, the matrix $A(v)$ is no longer static but changes based on the vector $v$ itself. Nevertheless, we are still hunting for those unique vectors $v$ that remain perfectly aligned with their output after the transformation.
+            </p>
+
+            <div class="row g-4 mt-3">
+                <div class="col-md-6">
+                    <div class="info-box info-box-primary">
+                        <div class="info-box-icon">01</div>
+                        <h5>The Dynamic Matrix $A(v)$</h5>
+                        <p>For the example below, we define the matrix $A$ as follows:</p>
+                        <p class="mt-2">
+                            $$ A(v) = \begin{pmatrix} x^2 & 1 \\ 1 & y^2 \end{pmatrix} $$
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-box info-box-accent">
+                        <div class="info-box-icon">02</div>
+                        <h5>Hunting for Eigenvectors</h5>
+                        <p>An <em>eigenvector</em> is found when the <strong style="color:#6366f1">Blue (Input)</strong> and <strong style="color:#ef4444">Red (Output)</strong> arrows align perfectly. The ratio of their lengths becomes the <strong>Eigenvalue ($\lambda$)</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Explorer Section -->
+        <div class="explorer-grid">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="panel-header">
+                    <div class="panel-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"/>
+                            <line x1="12" y1="2" x2="12" y2="6"/>
+                            <line x1="12" y1="18" x2="12" y2="22"/>
+                            <line x1="2" y1="12" x2="6" y2="12"/>
+                            <line x1="18" y1="12" x2="22" y2="12"/>
+                        </svg>
+                    </div>
+                    <h5 class="panel-title">Adjust Vector $v$</h5>
+                </div>
+                <p class="panel-desc">Drag the sliders to transform the input vector. Watch how the output responds nonlinearly in real-time.</p>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>X-Coordinate</span>
+                        <span class="slider-value" id="valX">1.0</span>
+                    </div>
+                    <input type="range" id="sliderX" min="-2" max="2" step="0.1" value="1">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Y-Coordinate</span>
+                        <span class="slider-value" id="valY">0.5</span>
+                    </div>
+                    <input type="range" id="sliderY" min="-2" max="2" step="0.1" value="0.5">
+                </div>
+
+                <div class="status-card" id="statusCard">
+                    <div class="status-label" id="statusLabel">🎯 Mission</div>
+                    <div class="status-value" id="statusValue">Align the blue and red vectors to discover an eigenvector</div>
+                    <div class="eigenvalue-display" id="eigenDisplay" style="display:none;"></div>
+                </div>
+            </div>
+
+            <!-- Graph Panel -->
+            <div class="graph-panel">
+                <div class="graph-header">
+                    <h5 class="graph-title">Vector Visualization</h5>
+                    <div class="legend-pills">
+                        <span class="legend-pill">
+                            <span class="legend-dot" style="background: #6366f1;"></span>
+                            Input $v$
+                        </span>
+                        <span class="legend-pill">
+                            <span class="legend-dot" style="background: #ef4444;"></span>
+                            Output $A(v)v$
+                        </span>
+                    </div>
+                </div>
+                <div id="myGraph" style="width:100%; height:520px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function computeNEPv(x, y) {
+            const outX = (x * x) * x + (1) * y;
+            const outY = (1) * x + (y * y) * y;
+            return { outX, outY };
+        }
+
+        function updatePlot() {
+            const x = parseFloat(document.getElementById('sliderX').value);
+            const y = parseFloat(document.getElementById('sliderY').value);
+
+            document.getElementById('valX').innerText = x.toFixed(1);
+            document.getElementById('valY').innerText = y.toFixed(1);
+
+            const result = computeNEPv(x, y);
+
+            const angleInput = Math.atan2(y, x);
+            const angleOutput = Math.atan2(result.outY, result.outX);
+
+            let angleDiff = Math.abs(angleInput - angleOutput);
+            // Handle antipodal cases (negative eigenvalues still align direction line)
+            if (angleDiff > Math.PI) angleDiff = Math.abs(angleDiff - 2 * Math.PI);
+
+            const isAligned = (angleDiff < 0.01 || Math.abs(angleDiff - Math.PI) < 0.01) && (Math.abs(x) > 0.01 || Math.abs(y) > 0.01);
+
+            // Compute eigenvalue approximation
+            const inputMag = Math.sqrt(x * x + y * y);
+            const outputMag = Math.sqrt(result.outX * result.outX + result.outY * result.outY);
+            const dotProduct = x * result.outX + y * result.outY;
+            const lambda = inputMag > 0.01 ? dotProduct / (inputMag * inputMag) : 0;
+
+            // Update status card
+            const statusCard = document.getElementById('statusCard');
+            const statusLabel = document.getElementById('statusLabel');
+            const statusValue = document.getElementById('statusValue');
+            const eigenDisplay = document.getElementById('eigenDisplay');
+
+            if (isAligned) {
+                statusCard.classList.add('aligned');
+                statusLabel.innerHTML = '✨ EIGENVECTOR FOUND';
+                statusValue.innerText = 'The vectors are perfectly aligned!';
+                eigenDisplay.style.display = 'block';
+                eigenDisplay.innerHTML = 'λ ≈ ' + lambda.toFixed(3);
+            } else {
+                statusCard.classList.remove('aligned');
+                statusLabel.innerHTML = '🎯 Mission';
+                statusValue.innerText = 'Align the blue and red vectors to discover an eigenvector';
+                eigenDisplay.style.display = 'none';
+            }
+
+            const inputColor = isAligned ? '#10b981' : '#6366f1';
+            const outputColor = isAligned ? '#10b981' : '#ef4444';
+
+            const data = [
+                {
+                    x: [0, x], y: [0, y],
+                    name: isAligned ? 'Eigenvector' : 'Input v',
+                    mode: 'lines+markers',
+                    line: { color: inputColor, width: 5 },
+                    marker: { size: [0, 12], color: inputColor }
+                },
+                {
+                    x: [0, result.outX], y: [0, result.outY],
+                    name: isAligned ? 'Aligned Output' : 'Output A(v)v',
+                    mode: 'lines+markers',
+                    line: { color: outputColor, width: 4, dash: isAligned ? 'solid' : 'dot' },
+                    marker: { size: [0, 10], color: outputColor }
+                }
+            ];
+
+            const layout = {
+                xaxis: {
+                    range: [-5, 5],
+                    title: { text: 'X', font: { size: 13, color: '#64748b' } },
+                    zeroline: true,
+                    zerolinecolor: '#cbd5e1',
+                    zerolinewidth: 2,
+                    gridcolor: '#f1f5f9',
+                    showgrid: true
+                },
+                yaxis: {
+                    range: [-5, 5],
+                    title: { text: 'Y', font: { size: 13, color: '#64748b' } },
+                    zeroline: true,
+                    zerolinecolor: '#cbd5e1',
+                    zerolinewidth: 2,
+                    gridcolor: '#f1f5f9',
+                    showgrid: true,
+                    scaleanchor: 'x',
+                    scaleratio: 1
+                },
+                margin: { t: 40, r: 30, b: 50, l: 50 },
+                showlegend: true,
+                legend: {
+                    x: 0.02,
+                    y: 0.98,
+                    bgcolor: 'rgba(255,255,255,0.9)',
+                    bordercolor: '#e2e8f0',
+                    borderwidth: 1,
+                    font: { size: 12 }
+                },
+                plot_bgcolor: '#fafbff',
+                paper_bgcolor: 'white',
+                annotations: isAligned ? [{
+                    xref: 'paper', yref: 'paper',
+                    x: 0.5, y: 1.05,
+                    text: '✨ EIGENVECTOR DETECTED ✨',
+                    showarrow: false,
+                    font: { color: '#10b981', size: 16, family: 'Inter', weight: 700 }
+                }] : []
+            };
+
+            const config = {
+                responsive: true,
+                displayModeBar: false
+            };
+
+            Plotly.react('myGraph', data, layout, config);
+        }
+
+        document.getElementById('sliderX').addEventListener('input', updatePlot);
+        document.getElementById('sliderY').addEventListener('input', updatePlot);
+
+        updatePlot();
+    </script>
+</body>
+</html>
