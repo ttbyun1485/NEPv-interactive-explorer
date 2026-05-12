@@ -14,7 +14,7 @@ To run this project on your machine, simply open the index.html file.
 
 ## Limitations 
 - Precision:  The tool uses a tolerance threshold (0.01 radians) for alignment detection.
-- Oeprator: The operator is defined to be a  2x2 matrix, failed to provide gemoetric interpretation of higher-dimension matrix. Also, the users cannot explore other matrix-functions. 
+- Operator: The operator is defined to be a  2x2 matrix, failed to provide gemoetric interpretation of higher-dimension matrix. Also, the users cannot explore other matrix-functions. 
 
 ## AI Disclosure
 This project was developed with the assistance of AI for UI/UX brainstorming and front-end architecture. 
