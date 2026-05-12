@@ -14,7 +14,8 @@ To run this project on your machine, simply open the index.html file.
 
 ## Limitations 
 - Precision:  The tool uses a tolerance threshold (0.01 radians) for alignment detection.
-- Operator: The operator is defined to be a  2x2 matrix, failed to provide gemoetric interpretation of higher-dimension matrix. Also, the users cannot explore other matrix-functions. 
+- Operator: The operator is defined to be a  2x2 matrix, failed to provide gemoetric interpretation of higher-dimension matrix. Also, the users cannot explore other matrix-functions.
+- Lack of deep dive: This explorer only acts an intuitive platform to understand NEPv. Some deeper aspects on NEPv is omitted, including other numerical methods or choices of operator.  
 
 ## AI Disclosure
 This project was developed with the assistance of AI for UI front-end architecture. All core logic, like the NEPv operator and the alignment detection thresholds, were hand-verified. For example, I have picked some x and checked that the alignment matched the actual calculation. 
