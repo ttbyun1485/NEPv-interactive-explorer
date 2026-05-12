@@ -3,12 +3,12 @@
 An interactive mathematical visualization built to explore **Nonlinear Eigenvalue Problems with eigenvector dependency (NEPv)**.
 
 ## 🚀 Live Demo
-[Insert your GitHub Pages link here]
+https://ttbyun1485.github.io/NEPv-interactive-explorer/
 
 ## 🧠 Project Overview
 This project visualizes how the matrix $A(v)$ evolves as the input vector $v$ changes. 
 The specific operator used is:
-$$A(v) = \begin{pmatrix} x^2 & 1 \\ 1 & y^2 \end{pmatrix}$$
+$A(v) = \begin{pmatrix} x^2 & 1 \\ 1 & y^2 \end{pmatrix}$
 
 The tool allows users to manually "hunt" for eigenvectors by identifying positions where the input and output vectors align.
 
