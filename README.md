@@ -7,7 +7,7 @@ https://ttbyun1485.github.io/NEPv-interactive-explorer/
 
 ## 🧠 Project Overview
 This project visualizes how the matrix $A(v)$ evolves as the input vector $v$ changes. 
-$$The tool allows users to manually "hunt" for eigenvectors by identifying positions where the input and output vectors align.
+The tool allows users to manually "hunt" for eigenvectors by identifying positions where the input and output vectors align.
 
 ## 🛠️ Built With
 - **HTML5/CSS3** (Bootstrap 5)
