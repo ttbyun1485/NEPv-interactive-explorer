@@ -1,8 +1,8 @@
-##Problem Statement 
+## Problem Statement 
 - Explain what NEPv is.
 - Visual the underlying principal to find a solution.
 
-##Methodology 
+## Methodology 
 - Define an operator A, where 
        A(v) = [ x²  1 ]
               [ 1   y² ]
@@ -10,6 +10,6 @@
 - Use Math.atan2 to design the algorithm detecing alignment. 
   1. 
 
-##Evaluation 
+## Evaluation 
 - The viualizer successfully identifies all solution within the range of 0.01 radians.
 
